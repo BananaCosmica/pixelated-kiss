@@ -1,0 +1,59 @@
+<body>
+  <h1>Beijo Pixelado ❤️</h1>
+  <div class="bar-container">
+    <div class="progress" id="progress"></div>
+    <img src="char_left.png" class="character left" id="charLeft">
+    <img src="char_right.png" class="character right" id="charRight">
+    <img src="heart_pixel.png" class="heart" id="heart">
+  </div>
+  <div class="timer" id="timer"></div>
+
+  <script>
+    function updateProgress() {
+      const now = new Date();
+      const day = now.getDay(); // 0=Domingo ... 6=Sábado
+      const nextTarget = new Date(now);
+
+      if (day === 6 && now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() < 2) {
+        document.getElementById("heart").classList.add("show");
+      } else if (day === 0 && now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() < 2) {
+        document.getElementById("heart").classList.add("show");
+      } else {
+        document.getElementById("heart").classList.remove("show");
+      }
+
+      // Definir próximo sábado ou domingo
+      if (day < 6) {
+        nextTarget.setDate(now.getDate() + (6 - day));
+        nextTarget.setHours(0, 0, 0, 0);
+      } else if (day === 6) {
+        nextTarget.setDate(now.getDate() + 1);
+        nextTarget.setHours(0, 0, 0, 0);
+      } else {
+        nextTarget.setDate(now.getDate() + 6);
+        nextTarget.setHours(0, 0, 0, 0);
+      }
+
+      const total = nextTarget - now;
+      const progress = 1 - total / (7 * 24 * 60 * 60 * 1000);
+      document.getElementById("progress").style.width = (progress * 100) + "%";
+
+      // Personagens andando
+      const barWidth = document.querySelector(".bar-container").offsetWidth;
+      const charLeft = document.getElementById("charLeft");
+      const charRight = document.getElementById("charRight");
+      charLeft.style.left = (progress * (barWidth/2 - 48)) + "px";
+      charRight.style.right = (progress * (barWidth/2 - 48)) + "px";
+
+      // Timer pixelado
+      const hours = Math.floor(total / (1000 * 60 * 60));
+      const minutes = Math.floor((total % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((total % (1000 * 60)) / 1000);
+      document.getElementById("timer").textContent = 
+        `Próximo beijo em: ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    setInterval(updateProgress, 1000);
+  </script>
+</body>
+</html>
